@@ -39,7 +39,7 @@ def mbdbParser(manifest_mbdb_path, input_dir, output_dir, logger):
 
         '''Create domain path if it doesnt exist'''
         domain = (record.Domain.String).decode("utf-8")
-        domain_path = os.path.join(output_dir + "\\" + str(domain))
+        domain_path = os.path.join(output_dir + "/" + str(domain))
         if os.path.isdir(domain_path):
             pass
         else:
@@ -57,14 +57,14 @@ def mbdbParser(manifest_mbdb_path, input_dir, output_dir, logger):
 
             fileid = hashlib.sha1( domain_hash + b'-' + path_hash)
             fileid_hash = fileid.hexdigest()
-            file_path = os.path.join(input_dir + "\\" + fileid_hash)
+            file_path = os.path.join(input_dir + "/" + fileid_hash)
             if os.path.isfile(file_path):
 
                 '''Do some fun reversing strings to get the directory of the path so that we can copy the file properly'''
-                dest_path = os.path.join(output_dir + "\\" + domain + "\\" + path)
-                dest_path = dest_path.replace("/", "\\")
+                dest_path = os.path.join(output_dir + "/" + domain + "/" + path)
+                # dest_path = dest_path.replace("/", "\\")
                 reversed_dest_path = dest_path[::-1]
-                dest_path_root_reversed = reversed_dest_path.split('\\', 1)[-1]
+                dest_path_root_reversed = reversed_dest_path.split('/', 1)[-1]
                 dest_path_root = dest_path_root_reversed[::-1]
                 if os.path.isdir(dest_path_root):
                     copyfile(file_path, dest_path)

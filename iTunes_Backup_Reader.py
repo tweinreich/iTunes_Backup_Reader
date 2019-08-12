@@ -152,7 +152,7 @@ def main():
     if bulk:
         subfolders = os.listdir(input_dir)
         for folders in subfolders:
-            current_folder = os.path.join(input_dir + "\\" + folders)
+            current_folder = os.path.join(input_dir + "/" + folders)
             logger.info("Starting to read backup at: " + current_folder)
             plist_parser.parsePlists(current_folder, output_dir, out_type, logger)
 
@@ -161,7 +161,7 @@ def main():
                 recreator.startRecreate(current_folder, output_dir, logger)
 
     if ir_mode:
-        path = "\\Users\\*\\AppData\\Roaming\\Apple Computer\\MobileSync\\Backup\\*"
+        path = "/Users/*/AppData/Roaming/Apple Computer/MobileSync/Backup/*"
         all_paths = glob.glob(path)
 
 

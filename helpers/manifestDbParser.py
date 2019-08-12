@@ -46,28 +46,28 @@ def recreate(fileId, domain, relativePath, fType, root, sourceDir, logger):
     if fType == 4:
         logger.info("Found file with type of 4: " + relativePath)
         logger.info("Type 4 files aren't found in iTunes Backups... But we'll check anyway")
-        type4File = sourceDir + "\\" + fileId[0:2] + "\\" + fileId
+        type4File = sourceDir + "/" + fileId[0:2] + "/" + fileId
         if os.path.isfile(type4File):
             logger.info("The file actually exists... Please contact jfarley248@gmail.com to correct this code\n")
         logger.info("Nope, file: " + relativePath +  " does not exist")
 
     '''Fields with types of 2 are Folders'''
     if fType == 2:
-        logger.debug("Trying to recreate directory: " + domain + "\\" + relativePath + " from source file: " + fileId)
+        logger.debug("Trying to recreate directory: " + domain + "/" + relativePath + " from source file: " + fileId)
         try:
             recreateFolder(domain, relativePath, root, logger)
-            logger.debug("Successfully recreated directory: " + domain + "\\" + relativePath + " from source file: " + fileId)
+            logger.debug("Successfully recreated directory: " + domain + "/" + relativePath + " from source file: " + fileId)
         except Exception as ex:
             logger.exception("Failed to recreate directory: " + relativePath + " from source file: "
                               + fileId + " Exception was: " + str(ex))
 
     '''Fields with types of 1 are Files'''
     if fType == 1:
-        logger.debug("Trying to recreate file: " + domain + "\\"  + relativePath + " from source file: " + fileId)
+        logger.debug("Trying to recreate file: " + domain + "/"  + relativePath + " from source file: " + fileId)
         try:
             recreateFile(fileId, domain, relativePath, root, sourceDir, logger)
             logger.debug(
-                "Successfully recreated file: " + domain + "\\" + relativePath + " from source file: " + fileId)
+                "Successfully recreated file: " + domain + "/" + relativePath + " from source file: " + fileId)
         except Exception as ex:
             logger.exception("Failed to recreate file: " + relativePath + " from source file: "
                               + fileId + " Exception was: " + str(ex))
@@ -79,13 +79,13 @@ def recreateFolder(domain, relativePath, root, logger):
     '''If the relative path is empty, then the domain is the root folder'''
     domain = re.sub('[<>:"|?*]', '_', domain)
     relativePath = re.sub('[<>:"|?*]', '_', relativePath)
-    relativePath = relativePath.replace("/", "\\")
+    # relativePath = relativePath.replace("/", "\\")
     if not relativePath:
-        newFolder = root + "\\" + domain
+        newFolder = root + "/" + domain
         createFolder(newFolder, logger)
 
     else:
-        newFolder = root + "\\" + domain + "\\" + relativePath
+        newFolder = root + "/" + domain + "/" + relativePath
         createFolder(newFolder, logger)
 
 
@@ -97,12 +97,13 @@ def recreateFile(fileId, domain, relativePath, root, sourceDir, logger):
     '''Source file created from taking first two characters of fileID,
        using that as subfolder of source directory, and finding full name of file'''
     subFolder = fileId[0:2]
-    sourceFile = sourceDir + "\\" + subFolder + "\\" + fileId
+    sourceFile = sourceDir + "/" + subFolder + "/" + fileId
 
     '''Gets rid of folder slashes and replaces with backslashes, offending characters with underscores'''
-    sanitizedRelPath = relativePath.replace("/", "\\")
+    # sanitizedRelPath = relativePath.replace("/", "\\")
+    sanitizedRelPath = relativePath
     sanitizedRelPath = re.sub('[<>:"|?*]', '_', sanitizedRelPath)
-    destFile = root + "\\" + domain + "\\" + sanitizedRelPath
+    destFile = root + "/" + domain + "/" + sanitizedRelPath
 
 
     if not os.path.exists(os.path.dirname(destFile)):
@@ -125,7 +126,7 @@ def recreateFile(fileId, domain, relativePath, root, sourceDir, logger):
 def readManiDb(manifestPath, sourceDir, outputDir, logger):
 
     '''Creates Root folder for recreated file structure'''
-    root = outputDir + "\\" + "Recreated_File_Structure"
+    root = outputDir + "/" + "Recreated_File_Structure"
     createFolder(root, logger)
 
     conn = OpenDb(manifestPath, logger)
